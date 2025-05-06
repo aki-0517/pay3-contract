@@ -18,13 +18,13 @@ https://book.getfoundry.sh/
 ### Build
 
 ```shell
-$ forge build
+$ forge build --via-ir
 ```
 
 ### Test
 
 ```shell
-$ forge test
+$ forge test --via-ir
 ```
 
 ### Format
