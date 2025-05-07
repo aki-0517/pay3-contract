@@ -305,4 +305,51 @@ contract LinkCreatorTest is Test {
         assertEq(expiredLinks, 0);
         assertEq(canceledLinks, 0);
     }
+    
+    function testStringToBytes32Conversion() public {
+        // Test case for string ID to bytes32 conversion
+        string memory stringId = "U5I0zmId";
+        
+        // Method 1: Left-aligned padding (incorrect - this is what's causing the issue)
+        bytes32 incorrectLinkId = bytes32(bytes(stringId));
+        
+        // Method 2: Proper keccak256 hash (option for generating consistent IDs from strings)
+        bytes32 hashedLinkId = keccak256(abi.encodePacked(stringId));
+        
+        // Create a link with the normal method (this uses a generated ID based on inputs and block data)
+        vm.deal(sender, 2 ether);
+        vm.prank(sender);
+        bytes32 realLinkId = linkCreator.createLink{value: LINK_AMOUNT}(
+            address(0),
+            LINK_AMOUNT,
+            EXPIRATION_DURATION,
+            ""
+        );
+        
+        // Verify we can access the link with the real linkId
+        ILinkCreator.Link memory link = linkCreator.getLink(realLinkId);
+        assertEq(link.creator, sender);
+        
+        // Using the incorrect ID would fail
+        vm.expectRevert("LinkCreator: Link does not exist");
+        linkCreator.getLink(incorrectLinkId);
+        
+        // Using a hashed ID that wasn't actually used to create the link would also fail
+        vm.expectRevert("LinkCreator: Link does not exist");
+        linkCreator.getLink(hashedLinkId);
+        
+        // Log values for visual confirmation
+        console.log("String ID:", stringId);
+        console.log("Incorrect conversion (direct string-to-bytes32):");
+        console.logBytes32(incorrectLinkId);
+        console.log("Hashed string ID (keccak256):");
+        console.logBytes32(hashedLinkId);
+        console.log("Actual link ID from contract (generated from inputs):");
+        console.logBytes32(realLinkId);
+        
+        // API Integration Recommendation:
+        // 1. When creating a link, store the actual bytes32 returned from createLink()
+        // 2. When retrieving a link, use that stored bytes32 value directly
+        // 3. If using string IDs in the frontend, convert properly to bytes32 before contract calls
+    }
 }

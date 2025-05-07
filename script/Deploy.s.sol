@@ -8,12 +8,16 @@ import "../src/LinkRegistry.sol";
 
 /**
  * @title DeployScript
- * @notice Script for deploying the LinkCreator and LinkRegistry contracts
+ * @notice Script for deploying the LinkCreator and LinkRegistry contracts on Base Sepolia
  */
 contract DeployScript is Script {
     function run() external {
+        // 環境変数の読み込み
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address treasury = vm.envAddress("TREASURY_ADDRESS");
+        
+        // Base Sepoliaフォークを作成
+        vm.createSelectFork(vm.envString("BASE_SEPOLIA_RPC_URL"));
         
         vm.startBroadcast(deployerPrivateKey);
         
@@ -32,22 +36,22 @@ contract DeployScript is Script {
         linkRegistry.setLinkCreator(address(linkCreator));
         console2.log("LinkCreator set in LinkRegistry");
         
-        // Add some common ERC20 tokens as supported
-        // Example: USDC on Ethereum
-        address usdcAddress = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-        linkCreator.setTokenSupported(usdcAddress, true);
-        console2.log("USDC added as supported token");
-        
-        // Example: USDT on Ethereum
-        address usdtAddress = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
-        linkCreator.setTokenSupported(usdtAddress, true);
-        console2.log("USDT added as supported token");
-        
-        // Example: DAI on Ethereum
-        address daiAddress = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
-        linkCreator.setTokenSupported(daiAddress, true);
-        console2.log("DAI added as supported token");
+        // Base Sepolia上でのテストトークンのアドレスを設定
+        // 注意: 以下のアドレスは例示用です。実際のBase Sepolia上のトークンアドレスに置き換える必要があります
+        // テストネット用のトークンアドレスは別途確認が必要です
+        address testUSDC = address(0); // Base Sepolia上のUSDCアドレス
+        if (testUSDC != address(0)) {
+            linkCreator.setTokenSupported(testUSDC, true);
+            console2.log("Test USDC added as supported token");
+        }
         
         vm.stopBroadcast();
+        
+        // デプロイ後の情報をログ出力
+        console2.log("=== Deployment Summary ===");
+        console2.log("Network: Base Sepolia");
+        console2.log("LinkRegistry:", address(linkRegistry));
+        console2.log("LinkCreator:", address(linkCreator));
+        console2.log("Treasury:", treasury);
     }
 }

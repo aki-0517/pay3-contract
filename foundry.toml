@@ -13,6 +13,8 @@ sepolia = "${SEPOLIA_RPC_URL}"
 polygon = "${POLYGON_RPC_URL}"
 base = "${BASE_RPC_URL}"
 optimism = "${OPTIMISM_RPC_URL}"
+base-sepolia = "${BASE_SEPOLIA_RPC_URL}"
+
 
 [etherscan]
 ethereum = { key = "${ETHERSCAN_API_KEY}" }
@@ -21,6 +23,7 @@ sepolia = { key = "${ETHERSCAN_API_KEY}" }
 polygon = { key = "${POLYGONSCAN_API_KEY}" }
 base = { key = "${BASESCAN_API_KEY}" }
 optimism = { key = "${OPTIMISM_API_KEY}" }
+base-sepolia = { key = "${BASE_SEPOLIA_API_KEY}", url = "https://api-sepolia.basescan.org/api" }
 
 [profile.test]
 verbosity = 3

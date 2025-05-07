@@ -246,4 +246,43 @@ contract IntegrationTest is Test {
         assertEq(canceledLinkIds.length, 1);
         assertEq(canceledLinkIds[0], linkId3);
     }
+
+    // Add a test to verify proper string ID to bytes32 conversion for client integration
+    function testClientStringIdConversion() public {
+        // Simulate the client-side ID conversion issue
+        string memory clientId = "U5I0zmId";
+        
+        // Method 1: Direct string-to-bytes32 conversion (how client is doing it - causing issues)
+        bytes32 incorrectLinkId = bytes32(bytes(clientId));
+        
+        // Method 2: Proper way to handle the ID if we needed to use string-based IDs
+        bytes32 correctLinkId = keccak256(abi.encodePacked(clientId));
+        
+        // Create a real link
+        vm.deal(sender1, 2 ether);
+        vm.prank(sender1);
+        bytes32 realLinkId = linkCreator.createLink{value: 1 ether}(
+            address(0),
+            1 ether,
+            1 days,
+            ""
+        );
+        
+        // Verify the link exists with the correct ID
+        ILinkCreator.Link memory link = linkCreator.getLink(realLinkId);
+        assertEq(link.creator, sender1);
+        
+        // Verify the incorrect ID conversion would fail
+        vm.expectRevert("LinkCreator: Link does not exist");
+        linkCreator.getLink(incorrectLinkId);
+        
+        // Log for debugging
+        console.log("Client String ID:", clientId);
+        console.logBytes32(incorrectLinkId); // This is what client-side code is using
+        console.logBytes32(realLinkId);      // This is what's actually stored in the contract
+        
+        // Integration test guidance:
+        // 1. Client should either use the hash (keccak256) of the string ID when communicating with the contract
+        // 2. OR the client should generate and store the actual bytes32 linkId returned from createLink()
+    }
 }
