@@ -5,6 +5,7 @@ import {Script} from "../lib/forge-std/src/Script.sol";
 import {console2} from "../lib/forge-std/src/console2.sol";
 import "../src/LinkCreator.sol";
 import "../src/LinkRegistry.sol";
+import "../src/Constants.sol";
 
 /**
  * @title DeployScript
@@ -36,14 +37,18 @@ contract DeployScript is Script {
         linkRegistry.setLinkCreator(address(linkCreator));
         console2.log("LinkCreator set in LinkRegistry");
         
-        // Base Sepolia上でのテストトークンのアドレスを設定
-        // 注意: 以下のアドレスは例示用です。実際のBase Sepolia上のトークンアドレスに置き換える必要があります
-        // テストネット用のトークンアドレスは別途確認が必要です
-        address testUSDC = address(0); // Base Sepolia上のUSDCアドレス
-        if (testUSDC != address(0)) {
-            linkCreator.setTokenSupported(testUSDC, true);
-            console2.log("Test USDC added as supported token");
-        }
+        // Base Sepolia上のテストトークンのアドレスを設定
+        // Constants.solに定義されたBase Sepolia用のUSDCとUSDTのアドレスを使用
+        address sepoliaUSDC = Constants.USDC_ADDRESS_SEPOLIA;
+        address sepoliaUSDT = Constants.USDT_ADDRESS_SEPOLIA;
+        
+        // USDCをサポートトークンとして追加
+        linkCreator.setTokenSupported(sepoliaUSDC, true);
+        console2.log("USDC added as supported token:", sepoliaUSDC);
+        
+        // USDTをサポートトークンとして追加
+        linkCreator.setTokenSupported(sepoliaUSDT, true);
+        console2.log("USDT added as supported token:", sepoliaUSDT);
         
         vm.stopBroadcast();
         
@@ -53,5 +58,9 @@ contract DeployScript is Script {
         console2.log("LinkRegistry:", address(linkRegistry));
         console2.log("LinkCreator:", address(linkCreator));
         console2.log("Treasury:", treasury);
+        console2.log("Supported tokens:");
+        console2.log("- ETH: 0x0000000000000000000000000000000000000000 (default)");
+        console2.log("- USDC (Base Sepolia):", sepoliaUSDC);
+        console2.log("- USDT (Base Sepolia):", sepoliaUSDT);
     }
 }

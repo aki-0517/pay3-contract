@@ -9,6 +9,7 @@ import "../lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 
 import "./interfaces/ILinkCreator.sol";
 import "./interfaces/ILinkRegistry.sol";
+import "./Constants.sol";
 
 /**
  * @title LinkCreator
@@ -55,6 +56,18 @@ contract LinkCreator is ILinkCreator, ReentrancyGuard, Ownable {
         
         // Add ETH as supported by default (represented by address(0))
         supportedTokens[address(0)] = true;
+        
+        // Add USDC as supported token
+        supportedTokens[Constants.USDC_ADDRESS] = true;
+        
+        // Add USDT as supported token
+        supportedTokens[Constants.USDT_ADDRESS] = true;
+        
+        // Add WETH as supported token
+        supportedTokens[Constants.WETH_ADDRESS] = true;
+        
+        // Add Base Sepolia USDC as supported token
+        supportedTokens[Constants.USDC_ADDRESS_SEPOLIA] = true;
     }
     
     /**

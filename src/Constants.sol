@@ -29,6 +29,10 @@ library Constants {
     address public constant DAI_ADDRESS = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
     address public constant WETH_ADDRESS = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     
+    // Token addresses for Base Sepolia testnet
+    address public constant USDC_ADDRESS_SEPOLIA = 0x036CbD53842c5426634e7929541eC2318f3dCF7e; // Base Sepolia用USDCアドレス
+    address public constant USDT_ADDRESS_SEPOLIA = 0x1260DeB5D5AAa2Bed63A3177d7376263D5210E06; // Base Sepolia用USDTアドレス (チェックサム修正済み)
+    
     // Link status mapping for frontend representation
     function getLinkStatusName(uint8 status) internal pure returns (string memory) {
         if (status == 0) return "Active";
